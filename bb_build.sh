@@ -21,10 +21,7 @@ ANYKERNEL_DIR=/root/AnyKernel2
 EXPORT_DIR=/root/flashablezips
 
 # Make Changes to this before release
-ZIP_NAME="BlackBox-1.0"
-BASE_VER="BlackBox"
-VER="-v1.0-$(date +"%Y-%m-%d"-%H%M)-"
-
+ZIP_NAME="BlackBox-R1.0"
 
 # Color Code Script
 Black='\e[0;30m'        # Black
@@ -43,47 +40,58 @@ export SUBARCH=arm64
 export KBUILD_BUILD_USER="KunalKene1797"
 export KBUILD_BUILD_HOST="PhantomBlack"
 export CROSS_COMPILE="/root/aarch64-linux-android-4.9/bin/aarch64-linux-android-"
-export KBUILD_COMPILER_STRING=$(/root/platform_prebuilts_clang_host_linux-x86/clang-4053586/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+export KBUILD_COMPILER_STRING=$(/root/platform_prebuilts_clang_host_linux-x86/clang-r328903/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+
+# Branding
+
+echo "                                         "
+echo "  ___ _      _   ___ _  _____  _____  __ "
+echo " | _ ) |    /_\ / __| |/ / _ )/ _ \ \/ / "
+echo " | _ \ |__ / _ \ (__| ' <| _ \ (_) >  <  "
+echo " |___/____/_/ \_\___|_|\_\___/\___/_/\_\ "
+echo "                                         "
 
 
 # Compilation Scripts Are Below
-echo -e "${green}"
-echo "--------------------------------------------------------"
-echo "      Initializing build to compile Ver: $VER    "
-echo "--------------------------------------------------------"
+echo -e "${Green}"
+echo "-----------------------------------------------"
+echo "  Initializing build to compile Ver: $ZIP_NAME    "
+echo "-----------------------------------------------"
 
-echo -e "$yellow***********************************************"
+echo -e "$Yellow***********************************************"
 echo "         Creating Output Directory: out      "
 echo -e "***********************************************$nocol"
 
 mkdir -p out
 
-echo -e "$red***********************************************"
+echo -e "$Yellow***********************************************"
 echo "          Cleaning Up Before Compile          "
 echo -e "***********************************************$nocol"
 
 make O=out clean 
 make O=out mrproper
 
-echo -e "$yellow***********************************************"
+echo -e "$Yellow***********************************************"
 echo "          Initialising DEFCONFIG        "
 echo -e "***********************************************$nocol"
 
 make O=out ARCH=arm64 whyred-perf_defconfig
 
-echo -e "$yellow***********************************************"
+echo -e "$Yellow***********************************************"
 echo "          Cooking BlackBox        "
 echo -e "***********************************************$nocol"
 
 make -j$(nproc --all) O=out ARCH=arm64 \
-		      CC="/root/platform_prebuilts_clang_host_linux-x86/clang-4053586/bin/clang" \
+		      CC="/root/platform_prebuilts_clang_host_linux-x86/clang-r328903/bin/clang" \
                       CLANG_TRIPLE="aarch64-linux-gnu-"
 
 # If the above was successful
 if [ -a $KERN_IMG ]; then
    BUILD_RESULT_STRING="BUILD SUCCESSFUL"
 
-
+echo -e "$Purple***********************************************"
+echo "       Making Flashable Zip       "
+echo -e "***********************************************$nocol"
    # Make the zip file
    echo "MAKING FLASHABLE ZIP"
 
@@ -103,8 +111,6 @@ ZIP_EXPORT_LOCATION=${EXPORT_DIR}/${NOW}/${ZIP_NAME}.zip
 rm -rf ${ZIP_EXPORT}
 mkdir ${ZIP_EXPORT}
 cp ${ZIP_LOCATION} ${ZIP_EXPORT}
-
-
 cd ${HOME}
 
 # End the script
