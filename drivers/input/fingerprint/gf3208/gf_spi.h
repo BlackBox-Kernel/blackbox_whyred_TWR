@@ -139,6 +139,8 @@ struct gf_dev {
 	char fb_black;
 	char wait_finger_down;
 	struct work_struct work;
+	struct input_dev *input_dev;
+	struct state_suspended *state_suspended;
 };
 
 int gf_parse_dts(struct gf_dev *gf_dev);
