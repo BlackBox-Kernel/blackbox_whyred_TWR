@@ -110,7 +110,7 @@ ZIP_EXPORT_LOCATION=${EXPORT_DIR}/${NOW}/${ZIP_NAME}.zip
 
 rm -rf ${ZIP_EXPORT}
 mkdir ${ZIP_EXPORT}
-cp ${ZIP_LOCATION} ${ZIP_EXPORT}
+mv ${ZIP_LOCATION} ${ZIP_EXPORT}
 cd ${HOME}
 
 # End the script
