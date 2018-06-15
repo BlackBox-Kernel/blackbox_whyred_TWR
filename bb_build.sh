@@ -51,7 +51,13 @@ echo " | _ \ |__ / _ \ (__| ' <| _ \ (_) >  <  "
 echo " |___/____/_/ \_\___|_|\_\___/\___/_/\_\ "
 echo "                                         "
 
-
+PS3='Please enter your choice: '
+options=("Build BlackBox Flashable" "Test Build Kernel" "Quit")
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Option 1")
+            echo "You chose choice 1: Build BlackBox Flashable"
 # Compilation Scripts Are Below
 echo -e "${Green}"
 echo "-----------------------------------------------"
@@ -120,3 +126,65 @@ echo "${BUILD_RESULT_STRING}!"
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
 echo -e "$Yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
+break
+            ;;
+        "Option 2")
+            echo "You chose choice 2: Test Build Kernel"
+# Compilation Scripts Are Below
+echo -e "${Green}"
+echo "-----------------------------------------------"
+echo "  Initializing build to compile Ver: $ZIP_NAME    "
+echo "-----------------------------------------------"
+
+echo -e "$Yellow***********************************************"
+echo "         Creating Output Directory: out      "
+echo -e "***********************************************$nocol"
+
+mkdir -p out
+
+echo -e "$Yellow***********************************************"
+echo "          Cleaning Up Before Compile          "
+echo -e "***********************************************$nocol"
+
+make O=out clean 
+make O=out mrproper
+
+echo -e "$Yellow***********************************************"
+echo "          Initialising DEFCONFIG        "
+echo -e "***********************************************$nocol"
+
+make O=out ARCH=arm64 whyred-perf_defconfig
+
+echo -e "$Yellow***********************************************"
+echo "          Cooking BlackBox        "
+echo -e "***********************************************$nocol"
+
+make -j$(nproc --all) O=out ARCH=arm64 \
+		      CC="/root/platform_prebuilts_clang_host_linux-x86/clang-r328903/bin/clang" \
+                      CLANG_TRIPLE="aarch64-linux-gnu-"
+
+# If the above was successful
+if [ -a $KERN_IMG ]; then
+   BUILD_RESULT_STRING="BUILD SUCCESSFUL"
+
+else
+   BUILD_RESULT_STRING="BUILD FAILED"
+fi
+
+# End the script
+echo "${BUILD_RESULT_STRING}!"
+
+# BUILD TIME
+BUILD_END=$(date +"%s")
+DIFF=$(($BUILD_END - $BUILD_START))
+echo -e "$Yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
+break
+            ;;
+        "Quit")
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
+
+
