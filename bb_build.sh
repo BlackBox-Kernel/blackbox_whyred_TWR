@@ -21,7 +21,7 @@ ANYKERNEL_DIR=/root/AnyKernel2
 EXPORT_DIR=/root/flashablezips
 
 # Make Changes to this before release
-ZIP_NAME="BlackBox-R1.2"
+ZIP_NAME="BlackBox-R1.4"
 
 # Color Code Script
 Black='\e[0;30m'        # Black
@@ -56,7 +56,7 @@ options=("Build BlackBox Flashable" "Test Build Kernel" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
-        "Option 1")
+        "Build BlackBox Flashable")
             echo "You chose choice 1: Build BlackBox Flashable"
 # Compilation Scripts Are Below
 echo -e "${Green}"
@@ -128,7 +128,7 @@ DIFF=$(($BUILD_END - $BUILD_START))
 echo -e "$Yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
 break
             ;;
-        "Option 2")
+        "Test Build Kernel")
             echo "You chose choice 2: Test Build Kernel"
 # Compilation Scripts Are Below
 echo -e "${Green}"
