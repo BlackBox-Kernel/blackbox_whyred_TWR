@@ -1,26 +1,25 @@
-# Whyred-OSS
+# BlackBox Kernel - WhyRed
+R-Edition of this Kernel will always be focused on Stability and the X-Edition will be Focused on Experimental features.
 
-Stock kernel from Xiaomi's OOS with merged linux-stable upstream v4.4.135.
-
-## How to compile with Clang?
-- Assuming **_out_** is your output directory and **_whyred-perf_defconfig_** is your default defconfig
-- `mkdir -p out`
-- `make O=out clean`
-- `make O=out mrproper`
-- `make O=out ARCH=arm64 whyred-perf_defconfig`
-- `make -j$(nproc --all) O=out ARCH=arm64 CC="<path_to_clang>/bin/clang" CLANG_TRIPLE="aarch64-linux-gnu-"  CROSS_COMPILE="<path_to_toolchain>/bin/aarch64-linux-android-"`
-
-## Note
+## Setup Build Environment and Build BlackBox
 If you want to get rid of the long Google URL in the kernel version, then you need to add the following before compiling the kernel
 
 ```bash
-export KBUILD_COMPILER_STRING=$(<path_to_clang_folder/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+sudo apt-get update
+sudo apt-get install openjdk-8-jdk
+
+sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc unzip
+sudo apt-get intall python libssl-dev openssl
+
+git clone https://github.com/KunalKene1797/AnyKernel2
+git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86
+git clone https://github.com/BlackBox-Kernel/blackbox_whyred_TWR
+
+mkdir flashablezips
+
+./bb_build.sh
 ```
-## External Links
-
-- ###### Nathan's guide on how to compile with clang: [Click here!](https://github.com/nathanchance/android-kernel-clang)
-
 ## Found bugs?
 
 ###### Contact:
-Telegram: **@AxelBlaz3**
+Telegram: **@kunalkene1797**
