@@ -31,7 +31,6 @@
 #include <linux/display_state.h>
 #include <linux/input.h>
 #include <linux/slab.h>
-#include <linux/time.h>
 
 /* Available bits for boost_policy state */
 #define DRIVER_ENABLED        (1U << 0)
@@ -67,9 +66,6 @@ struct boost_policy {
 	struct workqueue_struct *wq;
 	uint32_t state;
 };
-
-/* Using time stamp to avoid unnecessory boost */
-struct timeval prev_timeval;
 
 /* Global pointer to all of the data for the driver */
 static struct boost_policy *boost_policy_g;
@@ -114,8 +110,6 @@ static int do_cpu_boost(struct notifier_block *nb,
 	struct cpufreq_policy *policy = data;
 	struct boost_policy *b = boost_policy_g;
 	uint32_t state;
-	struct timeval curr_timeval;
-	do_gettimeofday(&curr_timeval);
 
 	if (action != CPUFREQ_ADJUST)
 		return NOTIFY_OK;
@@ -132,17 +126,12 @@ static int do_cpu_boost(struct notifier_block *nb,
 
 	/* Boost CPU to max frequency for fingerprint boost */
 	if (state & FINGERPRINT_BOOST) {
-		if (curr_timeval.tv_sec>prev_timeval.tv_sec) {
-			prev_timeval.tv_sec = curr_timeval.tv_sec;
-	                pr_info("Boosting\n");
-        	        policy->cur = policy->max;
-                	policy->min = policy->max;
-	                return NOTIFY_OK;
-
-		} else {
-			pr_info("Boost avoided!");
-		}
+		pr_info("Boosting\n");
+		policy->cur = policy->max;
+		policy->min = policy->max;
+		return NOTIFY_OK;
 	}
+
 	return NOTIFY_OK;
 }
 
@@ -369,10 +358,6 @@ static int __init cpu_fp_init(void)
 	struct boost_policy *b;
 	int ret;
 	touched = false;
-	
-	do_gettimeofday(&prev_timeval);
-	// To allow first boost
-	prev_timeval.tv_sec -= 2;
 
 	b = alloc_boost_policy();
 	if (!b) {
