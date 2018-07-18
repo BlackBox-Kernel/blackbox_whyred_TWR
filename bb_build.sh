@@ -21,7 +21,7 @@ ANYKERNEL_DIR=/root/AnyKernel2
 EXPORT_DIR=/root/flashablezips
 
 # Make Changes to this before release
-ZIP_NAME="BlackBox-R1.4"
+ZIP_NAME="BlackBox-R1.5"
 
 # Color Code Script
 Black='\e[0;30m'        # Black
